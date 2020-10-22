@@ -12,6 +12,8 @@ before_install:
   - unzip terraform_"$tf_version"_linux_amd64.zip
   - sudo mv terraform /usr/local/bin/
   - rm terraform_"$tf_version"_linux_amd64.zip
+  - mkdir .terraform.d
+  - envsubst < credential.template > ./.terraform.d/credentials.tfrc.json
 
   # Terraform Plan and Apply
 # Plan only on pull requests, Apply on merged code
@@ -19,7 +21,6 @@ jobs:
   include:
     - stage: terraform plan
       # Only run terraform validate and plan state if within a pull request
-      if: type IN (pull_request, api)
       script:
         - echo "Validating Terraform fmt"
         - terraform fmt -recursive -check
@@ -29,7 +30,6 @@ jobs:
         - terraform plan $tf_plan_cli_options
     - stage: terraform apply
       # Only run terraform apply stage if outside of a pull request
-      if: type IN (push) and branch = master
       script:
         - echo "Merge detected, executing changes"
         - terraform init $tf_init_cli_options
