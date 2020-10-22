@@ -13,10 +13,9 @@ before_install:
   - sudo mv terraform /usr/local/bin/
   - rm terraform_"$tf_version"_linux_amd64.zip
   - echo "Setting Terraform token"
-  - mkdir .terraform.d
-  - envsubst < terraformrc > ./.terraformrc
+  - envsubst < terraformrc > ~/.terraformrc
   - echo $PWD
-  - ls -la
+  - ls -la ~/
 
   # Terraform Plan and Apply
 # Plan only on pull requests, Apply on merged code
